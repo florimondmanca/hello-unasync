@@ -1,0 +1,32 @@
+dist: xenial
+language: python
+
+cache: pip
+
+branches:
+  only:
+    - master
+
+python:
+  - 3.7
+  - 3.8
+
+stages:
+  - check
+  - test
+
+jobs:
+  include:
+    - stage: check
+      python: 3.7
+      install: scripts/install
+      script: scripts/check
+
+install: scripts/install
+script: scripts/test
+
+after_script:
+  - if [ -f .coverage ]; then
+    python -m pip install codecov;
+    codecov --required;
+    fi

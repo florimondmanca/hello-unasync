@@ -1,10 +1,15 @@
 #!/bin/sh -e
 
+export PREFIX=""
+if [ -d "venv" ]; then
+  export PREFIX="venv/bin/"
+fi
+
 set -x
 
 scripts/build
 
-pip uninstall hello-unasync --yes
-pip install --no-index --find-links=dist hello-unasync
+${PREFIX}pip uninstall hello-unasync --yes
+${PREFIX}pip install --find-links=dist hello-unasync
 
 scripts/clean

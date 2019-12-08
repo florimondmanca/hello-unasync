@@ -1,15 +1,30 @@
 #!/bin/sh -e
 
-export PREFIX="venv/bin/"
+export PREFIX=""
+
+if [ -z $CI ]; then
+    export PREFIX="venv/bin/"
+    echo "Creating virtual environment..."
+    python -m venv venv
+fi
 
 set -x
 
-python -m venv venv
 ${PREFIX}python -m pip install -U pip
 ${PREFIX}python -m pip install -r requirements.txt
+
+scripts/compile
 
 set +x
 
 echo
-echo "Success! You can now activate your virtual environment using:"
-echo "source ${PREFIX}activate"
+echo "Success!"
+
+if [ -z $CI ]; then
+  echo
+  echo "You can now activate your virtual environment using:"
+  echo "source ${PREFIX}activate"
+  echo
+  echo "To recompile in case of changes, use:"
+  echo "scripts/compile"
+fi
