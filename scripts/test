@@ -13,4 +13,5 @@ fi
 
 scripts/compile
 
+export PYTEST_ADDOPTS="--cov=$(find venv -type d -name hello_unasync)"
 ${PREFIX}pytest $@

@@ -48,11 +48,11 @@ The base class, `ConcurrencBackend`, is located under `_async` so that its synch
 
 ### Code coverage
 
-The current setup doesn't work well with `coverage.py`.
-
 When using `pip install -e`, `coverage.py` is able to map files of the installed package to those of the source tree (*probably* thanks to the `.egg-info` file).
 
-But because we install from a source distribution, that mapping can't be performed any more, and `coverage.py` traces files from the actual location of the installed package (e.g. `venv/lib/python3.8/site-packages/hello-unasync`) instead of files from the source tree.
+But because we install from a source distribution, that mapping can't be performed any more, and passing `--cov=src` to `coverage.py` won't work. This is because `coverage.py` now runs files from the actual location of the installed package (e.g. `venv/lib/python3.8/site-packages/hello-unasync`) instead of files from the source tree.
+
+To resolve this problem, the location of the installed package is passed as an extra `--cov` option by `scripts/test`.
 
 ## License
 
