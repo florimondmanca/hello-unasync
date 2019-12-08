@@ -1,34 +1,40 @@
 # hello-unasync
 
-This project is a proof-of-concept of using [`unasync`](https://unasync.readthedocs.io/en/latest/) in the context of a modern Python package.
+This repository is a proof-of-concept of code-generating the `sync` version of an `async`-capable Python package while providing all the development tooling now common for 3.6+ Python packages: type hints, linting, code formatting, code coverage.
 
-The goal is to figure out how to support sync from async via code generation, while having the following:
+Code generation is provided by [`unasync`](https://unasync.readthedocs.io/en/latest/).
 
-- Development workflow: automating code generation to make sure the `_sync` version is available at runtime.
-- Type annotations and type checking: ensure the code generation approach works well with mypy.
-- Code coverage: ensure that `coverage.py` is able to correctly identify which parts of the code are covered.
+## Usage
 
-## Installation
+Install locally using:
 
 ```
 scripts/install
 ```
 
-## Usage
+To run the tests:
 
-To build the `_sync` version of the code:
+```
+scripts/test
+```
+
+## Notes
+
+### Compilation
+
+To build the `_sync` version of the code, use:
 
 ```
 scripts/compile
 ```
 
-This runs `python setup.py sdist bdist_wheel` and generates a (temporary) source distribution in the root directory. Any existing installation of `hello-unasync` is then removed and `hello-unasync` is reinstalled from the built source distribution.
+This script:
 
-This script should be run so that changes to the code are reflected at run time.
+1. Builds the source/binary distribution. (This stage invokes `unasync`.)
+1. Removes any existing installation of `hello-unasync`.
+1. Installs `hello-unasync` from the built distribution.
 
-For this reason, it is automatically run in `scripts/install` and `scripts/test`.
-
-## Notes
+This script should be run after every changes made to the code, so that changes to the code are reflected at run time. (Instead of an edit/run workflow, we now have edit/compile/run.) For this reason, it is automatically run in `scripts/install` and `scripts/test`.
 
 ### `_sync` and linting
 
@@ -53,6 +59,15 @@ When using `pip install -e`, `coverage.py` is able to map files of the installed
 But because we install from a source distribution, that mapping can't be performed any more, and passing `--cov=src` to `coverage.py` won't work. This is because `coverage.py` now runs files from the actual location of the installed package (e.g. `venv/lib/python3.8/site-packages/hello-unasync`) instead of files from the source tree.
 
 To resolve this problem, the location of the installed package is passed as an extra `--cov` option by `scripts/test`.
+
+### Alternatives
+
+This repository builds the `sync` version of the package at build-time, but this is not the only approach.
+
+[python-trio/hip#149](https://github.com/python-trio/hip/issues/149) suggests at least two other options:
+
+- Compile the `sync` version before every commit, and commit it to source control.
+- Compile the `sync` version at import-time.
 
 ## License
 
