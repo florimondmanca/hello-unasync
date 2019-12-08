@@ -11,5 +11,16 @@ if [ -z $CI ]; then
     scripts/check
 fi
 
-export PYTEST_ADDOPTS="--cov=$(find venv -type d -name hello_unasync)"
+# We use this hack because `site.getsitepackages()` doesn't
+# exist in virtual environments created by `virtualenv`, and Travis CI uses `virtualenv`...
+# See: https://github.com/pypa/virtualenv/issues/737
+export SITE_PACKAGES=$(${PREFIX}python -c "import sys; print(sys.path[-1])")
+
+export PACKAGE_PATH=$(find $SITE_PACKAGES -type d -name hello_unasync)
+if [! $PACKAGE_PATH ]; then
+    echo "Location of package 'hello_unasync' could not be found."
+    exit 1
+fi
+export PYTEST_ADDOPTS="--cov=$PACKAGE_PATH"
+
 ${PREFIX}pytest $@
