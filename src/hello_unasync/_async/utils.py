@@ -1,4 +1,4 @@
-def is_async_mode() -> bool:
+def is_async_mode() -> bool:  # pragma: no cover
     """
     Return True if we are in the '_async' part of the code,
     or False if we are in the '_sync' part of the code.

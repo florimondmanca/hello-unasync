@@ -3,21 +3,6 @@ import typing
 from ._async.concurrency_backends.base import ConcurrencyBackend
 
 
-class _Backend:
-    """
-    Specifies the desired backend and any arguments passed to its constructor.
-    """
-
-    def __init__(self, name: str, **kwargs: typing.Any) -> None:
-        self.name = name
-        self.kwargs = kwargs
-
-    def __eq__(self, other: typing.Any) -> bool:
-        if not isinstance(other, _Backend):
-            return False
-        return self.name == other.name and self.kwargs == other.kwargs
-
-
 class _Loader:
     def __init__(
         self,
@@ -54,36 +39,33 @@ def _get_backend_loaders() -> typing.Dict[str, _Loader]:
     return {loader.name: loader for loader in loaders}
 
 
-def normalize_backend(name: str = "auto", *, async_mode: bool) -> _Backend:
+def normalize_backend(name: str = "auto", *, async_mode: bool) -> str:
     if name == "auto":
         if not async_mode:
-            backend = _Backend(name="sync")
+            backend = "sync"
         else:
             import sniffio
 
             async_library = sniffio.current_async_library()
             assert async_library == "asyncio"
-            backend = _Backend(name=async_library)
-    elif not isinstance(backend, _Backend):
-        backend = _Backend(name=name)
+            backend = async_library
+    else:  # pragma: no cover
+        backend = name
 
     loaders_by_name = _get_backend_loaders()
+    assert backend in loaders_by_name, "Unknown backend specifier: {backend!r}"
+    loader = loaders_by_name[backend]
 
-    if backend.name not in loaders_by_name:
-        raise ValueError("Unknown backend specifier: {backend.name!r}")
-
-    loader = loaders_by_name[backend.name]
-
-    if async_mode and not loader.is_async:
+    if async_mode and not loader.is_async:  # pragma: no cover
         raise ValueError(f"Backend {loader.name!r} needs to be run in sync mode")
 
-    if not async_mode and loader.is_async:
+    if not async_mode and loader.is_async:  # pragma: no cover
         raise ValueError(f"Backend {loader.name!r} needs to be run in async mode")
 
     return backend
 
 
-def load_backend(backend: _Backend) -> ConcurrencyBackend:
+def load_backend(backend: str) -> ConcurrencyBackend:
     loaders_by_name = _get_backend_loaders()
-    loader = loaders_by_name[backend.name]
+    loader = loaders_by_name[backend]
     return loader()
