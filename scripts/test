@@ -11,4 +11,6 @@ if [ -z $CI ]; then
     scripts/check
 fi
 
+scripts/compile
+
 ${PREFIX}pytest $@

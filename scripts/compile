@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+set -x
+
+scripts/build
+
+pip uninstall hello-unasync --yes
+pip install --no-index --find-links=dist hello-unasync
