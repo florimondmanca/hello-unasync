@@ -1,5 +1,8 @@
 # hello-unasync
 
+[![Build Status](https://travis-ci.com/florimondmanca/hello-unasync.svg?branch=master)](https://travis-ci.com/florimondmanca/hello-unasync)
+[![Coverage](https://codecov.io/gh/florimondmanca/hello-unasync/branch/master/graph/badge.svg)](https://codecov.io/gh/florimondmanca/hello-unasync)
+
 This repository is a proof-of-concept of code-generating the `sync` version of an `async`-capable Python package while providing all the development tooling now common for 3.6+ Python packages: type hints, linting, code formatting, code coverage.
 
 Code generation is provided by [`unasync`](https://unasync.readthedocs.io/en/latest/).
