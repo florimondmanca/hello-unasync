@@ -1,0 +1,10 @@
+-e .
+
+autoflake
+black
+flake8
+isort
+mypy
+pytest
+pytest-cov
+seed-isort-config
