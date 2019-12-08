@@ -26,7 +26,10 @@ setup(
     version=get_version("hello_unasync"),
     url="https://github.com/florimondmanca/hello-unasync",
     license="MIT",
-    description="An example Python package supporting async + sync via unasync",
+    description=(
+        "Example Python package supporting async + sync "
+        "via code generation, tooling included"
+    ),
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
     author="Florimond Manca",
