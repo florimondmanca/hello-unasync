@@ -26,5 +26,5 @@ def test_sync_manager() -> None:
 @pytest.mark.asyncio
 async def test_async_manager() -> None:
     manager = AsyncManager("Hello, world!", delay=0.1)
-    with assert_timer(pytest.approx(0.1, rel=1e-2)):
+    with assert_timer(pytest.approx(0.1, abs=1e-2)):
         assert await manager.run() == "Hello, world!"
